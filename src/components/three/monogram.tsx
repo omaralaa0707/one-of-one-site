@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, Float, MeshTransmissionMaterial } from "@react-three/drei";
+import { Environment, Float, Lightformer } from "@react-three/drei";
 import { useRef, useState, Suspense } from "react";
 import * as THREE from "three";
 import { useReducedMotion } from "@/lib/use-browser";
@@ -23,7 +23,8 @@ function Mark({ pointer }: { pointer: React.RefObject<{ x: number; y: number }> 
     // makes the mark feel weighted rather than glued to the mouse.
     g.rotation.y = THREE.MathUtils.damp(g.rotation.y, p.x * 0.55, 3, delta);
     g.rotation.x = THREE.MathUtils.damp(g.rotation.x, -p.y * 0.35, 3, delta);
-    g.rotation.z += delta * 0.055;
+    // No continuous z-spin: the slash sits at a fixed angle in the real logo,
+    // and rotating it turns the Ø into an anonymous ring for most of the loop.
     void state;
   });
 
@@ -31,30 +32,30 @@ function Mark({ pointer }: { pointer: React.RefObject<{ x: number; y: number }> 
     <group ref={group}>
       <mesh>
         <torusGeometry args={[1.32, 0.235, 64, 220]} />
-        <MeshTransmissionMaterial
-          thickness={0.9}
-          roughness={0.06}
-          transmission={1}
-          ior={1.7}
-          chromaticAberration={0.32}
-          anisotropy={0.4}
-          distortion={0.15}
-          distortionScale={0.3}
-          temporalDistortion={0.1}
-          backside
-          color="#f4f2ee"
+        <meshPhysicalMaterial
+          color="#dedcd7"
+          metalness={1}
+          roughness={0.17}
+          clearcoat={1}
+          clearcoatRoughness={0.08}
+          envMapIntensity={2.1}
         />
       </mesh>
 
       {/* Polished metal, not glass: a transmissive slash goes near-black against
           a dark showroom and the mark starts reading as a "no entry" sign. */}
       <mesh rotation={[0, 0, Math.PI / 3.35]}>
-        <boxGeometry args={[0.235, 3.5, 0.235]} />
-        <meshStandardMaterial
-          color="#e8e6e1"
+        {/* Round section, like the torus: a flat-faced bar reflects one dim
+            panel and reads as dull grey, while a cylinder sweeps the whole
+            environment and picks up the same highlights as the ring. */}
+        <cylinderGeometry args={[0.125, 0.125, 3.42, 48]} />
+        <meshPhysicalMaterial
+          color="#dedcd7"
           metalness={1}
-          roughness={0.14}
-          envMapIntensity={1.6}
+          roughness={0.17}
+          clearcoat={1}
+          clearcoatRoughness={0.08}
+          envMapIntensity={2.1}
         />
       </mesh>
     </group>
@@ -119,7 +120,55 @@ export function Monogram({ className }: { className?: string }) {
           <Float speed={1.1} rotationIntensity={0.22} floatIntensity={0.55}>
             <Mark pointer={pointer} />
           </Float>
-          <Environment preset="city" />
+          {/* A hand-built environment instead of a preset HDR: drei's presets
+              fetch from a CDN at runtime, which left the mark unlit in
+              production. These strip lights also mirror the hexagon ceiling
+              array in the showroom's own photographs. */}
+          <Environment resolution={256}>
+            {/* A dim wrap first: with nothing but bright strips against a black
+                void, polished metal reflects mostly black and the mark bands
+                harshly. This gives every reflection a grey floor to sit on. */}
+            <Lightformer
+              form="rect"
+              intensity={1.15}
+              position={[0, 0, -6]}
+              scale={[24, 24, 1]}
+              color="#6d7076"
+            />
+            <Lightformer
+              form="rect"
+              intensity={0.95}
+              position={[0, 0, 8]}
+              scale={[24, 24, 1]}
+              color="#5c6066"
+            />
+            {/* Key: a wide soft strip overhead, like the showroom ceiling. */}
+            <Lightformer
+              form="rect"
+              intensity={4.2}
+              position={[0, 5, 1]}
+              rotation={[Math.PI / 2, 0, 0]}
+              scale={[9, 5, 1]}
+              color="#f6f5f2"
+            />
+            <Lightformer
+              form="rect"
+              intensity={2.6}
+              position={[-5, 1, 3]}
+              rotation={[0, Math.PI / 2, 0]}
+              scale={[7, 4, 1]}
+              color="#eceae5"
+            />
+            {/* Warm bounce, sampled from the tan leather in their photographs. */}
+            <Lightformer
+              form="rect"
+              intensity={2.0}
+              position={[5, -1.5, 2]}
+              rotation={[0, -Math.PI / 2, 0]}
+              scale={[7, 4, 1]}
+              color="#c08a4e"
+            />
+          </Environment>
         </Suspense>
       </Canvas>
     </div>
