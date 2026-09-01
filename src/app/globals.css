@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+@theme {
+  /* Sampled from the showroom photography: near-black walls, tan leather,
+     chrome trim. Nothing here is invented — it is the brand's own palette. */
+  --color-void: #08080a;
+  --color-void-2: #101014;
+  --color-void-3: #17171c;
+  --color-bone: #edeae4;
+  --color-bone-dim: #a5a29c;
+  --color-tan: #c08a4e;
+  --color-tan-soft: #d9ab77;
+  --color-chrome: #cfd3d8;
+
+  --font-display: var(--font-jost), "Helvetica Neue", sans-serif;
+  --font-body: var(--font-inter), system-ui, sans-serif;
+  --font-arabic: var(--font-tajawal), "Segoe UI", sans-serif;
+
+  --text-hero: clamp(2.75rem, 9vw, 8.5rem);
+  --text-display: clamp(2rem, 5.2vw, 4.75rem);
+  --text-section: clamp(1.5rem, 3vw, 2.75rem);
+  --text-lead: clamp(1rem, 1.35vw, 1.25rem);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    background: var(--color-void);
+    color: var(--color-bone);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Arabic gets its own family without every component branching on locale. */
+  html[dir="rtl"] body {
+    font-family: var(--font-arabic);
+  }
+
+
+  body {
+    font-family: var(--font-body);
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-tan);
+    color: var(--color-void);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+}
+
+@utility tracking-brand {
+  letter-spacing: 0.34em;
+}
+
+/* The showroom's hexagon ceiling array, abstracted into a section motif. */
+@utility hex-field {
+  background-image: radial-gradient(
+      circle at 50% 50%,
+      color-mix(in oklab, var(--color-chrome) 8%, transparent) 0%,
+      transparent 60%
+    ),
+    repeating-linear-gradient(
+      60deg,
+      color-mix(in oklab, var(--color-chrome) 4%, transparent) 0 1px,
+      transparent 1px 46px
+    ),
+    repeating-linear-gradient(
+      -60deg,
+      color-mix(in oklab, var(--color-chrome) 4%, transparent) 0 1px,
+      transparent 1px 46px
+    );
+}
+
+@utility film-grain {
+  position: relative;
+}
+
+.film-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Arabic type corrections.
+   Deliberately unlayered: Tailwind's utilities live in @layer utilities, and a
+   layered rule can never outrank them no matter how specific it is. */
+html[dir="rtl"] .text-hero {
+  font-size: clamp(2rem, 6.2vw, 5.6rem);
+  line-height: 1.3;
+}
+
+html[dir="rtl"] .text-display {
+  font-size: clamp(1.6rem, 3.8vw, 3.4rem);
+  line-height: 1.35;
+}
+
+html[dir="rtl"] .text-section {
+  font-size: clamp(1.3rem, 2.4vw, 2.2rem);
+  line-height: 1.4;
+}
+
+/* Arabic has no uppercase; the transform does nothing but the wide tracking
+   from the Latin label style pulls the joined script apart. */
+html[dir="rtl"] .tracking-brand,
+html[dir="rtl"] [class*="tracking-["] {
+  letter-spacing: 0.04em;
+}
+
+/* Same cascade reason as above: `font-display` is a utility, so its Arabic
+   counterpart has to sit outside the layers to take effect. */
+html[dir="rtl"] .font-display {
+  font-family: var(--font-arabic);
+  letter-spacing: 0;
+}
