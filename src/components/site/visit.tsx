@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { useLocale } from "@/i18n/locale-provider";
 import { Reveal } from "@/components/motion/reveal";
-import { SplitText } from "@/components/motion/split-text";
 import { SHOWROOM_FRAMES } from "@/content/media";
 
 export function Visit() {
@@ -23,11 +22,11 @@ export function Visit() {
 
           <div className="grid gap-px bg-white/10 md:grid-cols-2">
             {content.services.items.map((item, i) => (
-              <Reveal key={item.title} delay={i * 0.06}>
-                <div className="group h-full bg-void-2 p-8 transition-colors duration-700 hover:bg-void-3 md:p-12">
-                  <span className="font-display text-[0.6rem] tracking-[0.22em] text-tan">
+              <Reveal key={item.title} delay={Math.min(i, 3) * 0.05}>
+                <div className="group h-full bg-void-2 p-8 transition-colors duration-200 hover:bg-void-3 md:p-12">
+                  <bdi className="font-display text-[0.6rem] tracking-[0.22em] text-tan">
                     {String(i + 1).padStart(2, "0")}
-                  </span>
+                  </bdi>
                   <h3 className="font-display mt-6 text-[clamp(1.25rem,2.4vw,1.9rem)] font-light text-bone">
                     {item.title}
                   </h3>
@@ -52,12 +51,9 @@ export function Visit() {
         </div>
 
         <div className="relative mx-auto max-w-[1600px] px-5 py-24 md:px-10 md:py-28">
-          <SplitText
-            as="h2"
-            trigger="inView"
-            text={c.heading}
-            className="font-display max-w-[15ch] text-display leading-[1.02] font-extralight"
-          />
+          <h2 className="font-display max-w-[15ch] text-display leading-[1.02] font-extralight">
+            {c.heading}
+          </h2>
 
           {c.intro && (
             <Reveal delay={0.1}>
@@ -78,7 +74,7 @@ export function Visit() {
                 className="group mt-5 inline-flex items-center gap-2 font-display text-[0.7rem] tracking-[0.18em] text-bone-dim uppercase transition-colors hover:text-tan"
               >
                 {c.cta}
-                <span className="transition-transform duration-500 group-hover:translate-x-1 rtl:group-hover:-translate-x-1">
+                <span className="transition-transform duration-200 group-hover:translate-x-1 rtl:group-hover:-translate-x-1">
                   →
                 </span>
               </a>

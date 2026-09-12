@@ -2,9 +2,22 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Float, Lightformer } from "@react-three/drei";
-import { useRef, useState, Suspense } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
 import * as THREE from "three";
 import { useReducedMotion } from "@/lib/use-browser";
+
+/** True on touch-first devices or narrow screens: no continuous WebGL animation there. */
+function useLiteGL(): boolean {
+  const [lite, setLite] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(pointer: coarse), (max-width: 767px)");
+    const update = () => setLite(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+  return lite;
+}
 
 /**
  * The brand's slashed-Ø mark, rebuilt as real geometry: a torus for the O and a
@@ -12,10 +25,17 @@ import { useReducedMotion } from "@/lib/use-browser";
  * Transmission material picks up the environment, so the mark reads as polished
  * chrome rather than flat plastic.
  */
-function Mark({ pointer }: { pointer: React.RefObject<{ x: number; y: number }> }) {
+function Mark({
+  pointer,
+  still,
+}: {
+  pointer: React.RefObject<{ x: number; y: number }>;
+  still: boolean;
+}) {
   const group = useRef<THREE.Group>(null);
 
   useFrame((state, delta) => {
+    if (still) return;
     const g = group.current;
     if (!g) return;
     const p = pointer.current ?? { x: 0, y: 0 };
@@ -64,38 +84,44 @@ function Mark({ pointer }: { pointer: React.RefObject<{ x: number; y: number }> 
 
 export function Monogram({ className }: { className?: string }) {
   const pointer = useRef({ x: 0, y: 0 });
+  const invalidateRef = useRef<(() => void) | null>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
+  const [inView, setInView] = useState(true);
   const reduced = useReducedMotion();
+  const lite = useLiteGL();
+
+  // The mark sits in the hero, so it mounts immediately — but once the
+  // visitor scrolls it out of view there is no reason to keep rendering it.
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), {
+      rootMargin: "200px",
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   if (reduced) {
     // Static, high-contrast fallback. No WebGL context, no motion.
     return (
       <div className={className} aria-hidden>
         <svg viewBox="0 0 200 200" className="h-full w-full">
-          <ellipse
-            cx="100"
-            cy="100"
-            rx="62"
-            ry="74"
-            fill="none"
-            stroke="#edeae4"
-            strokeWidth="9"
-          />
-          <line
-            x1="58"
-            y1="152"
-            x2="146"
-            y2="46"
-            stroke="#edeae4"
-            strokeWidth="9"
-          />
+          <ellipse cx="100" cy="100" rx="62" ry="74" fill="none" stroke="#edeae4" strokeWidth="9" />
+          <line x1="58" y1="152" x2="146" y2="46" stroke="#edeae4" strokeWidth="9" />
         </svg>
       </div>
     );
   }
 
+  // Touch/small-screen: a still frame. A drag can still nudge it (invalidate),
+  // but nothing spins or floats on its own.
+  const frameloop = lite ? "demand" : inView ? "always" : "never";
+
   return (
     <div
+      ref={wrapRef}
       className={className}
       aria-hidden
       onPointerMove={(e) => {
@@ -104,21 +130,30 @@ export function Monogram({ className }: { className?: string }) {
           x: ((e.clientX - r.left) / r.width) * 2 - 1,
           y: ((e.clientY - r.top) / r.height) * 2 - 1,
         };
+        invalidateRef.current?.();
       }}
     >
       <Canvas
         camera={{ position: [0, 0, 5.4], fov: 42 }}
-        dpr={[1, 1.75]}
+        dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true }}
-        onCreated={() => setReady(true)}
-        style={{ opacity: ready ? 1 : 0, transition: "opacity 1.2s ease" }}
+        frameloop={frameloop}
+        onCreated={(state) => {
+          setReady(true);
+          invalidateRef.current = state.invalidate;
+        }}
+        style={{ opacity: ready ? 1 : 0, transition: "opacity 0.9s ease" }}
       >
         <Suspense fallback={null}>
           <ambientLight intensity={0.5} />
           <spotLight position={[6, 8, 6]} intensity={180} angle={0.4} penumbra={1} />
           <spotLight position={[-7, -4, 4]} intensity={90} color="#c08a4e" />
-          <Float speed={1.1} rotationIntensity={0.22} floatIntensity={0.55}>
-            <Mark pointer={pointer} />
+          <Float
+            speed={lite ? 0 : 1.1}
+            rotationIntensity={lite ? 0 : 0.22}
+            floatIntensity={lite ? 0 : 0.55}
+          >
+            <Mark pointer={pointer} still={lite} />
           </Float>
           {/* A hand-built environment instead of a preset HDR: drei's presets
               fetch from a CDN at runtime, which left the mark unlit in

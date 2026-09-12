@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Jost, Inter, Tajawal } from "next/font/google";
 import "./globals.css";
 import { LocaleProvider } from "@/i18n/locale-provider";
-import { ScrollProvider } from "@/components/motion/scroll-provider";
 import { ar } from "@/content/ar";
 import { en } from "@/content/en";
 
@@ -52,8 +51,13 @@ export default function RootLayout({
       className={`notranslate ${jost.variable} ${inter.variable} ${tajawal.variable}`}
     >
       <body className="bg-void text-bone antialiased">
+        {/* No-JS escape for the section-reveal effect (globals.css `.reveal`):
+            without JavaScript nothing ever adds `.is-visible`, so force the
+            resting state visible instead of leaving content hidden. */}
+        <noscript>
+          <style>{`.reveal{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
         <LocaleProvider dictionaries={{ ar, en }} defaultLocale="ar">
-          <ScrollProvider />
           {children}
         </LocaleProvider>
       </body>

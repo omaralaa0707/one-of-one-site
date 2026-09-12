@@ -17,11 +17,6 @@ export type ServiceItem = {
   body: string;
 };
 
-export type StatItem = {
-  value: string;
-  label: string;
-};
-
 /**
  * One dealership's full page copy in a single locale. Every site fills the same
  * shape so content sourcing stays mechanical while layout stays bespoke.
@@ -46,7 +41,6 @@ export type SiteContent = {
   about: {
     heading: string;
     body: string[];
-    stats?: StatItem[];
   };
   services: {
     heading: string;
@@ -73,8 +67,6 @@ export type SiteContent = {
     cta: string;
   };
   footer: {
-    /** Bilingual disclaimer: these are concept sites, not official ones. */
-    disclaimer: string;
     rights: string;
   };
   a11y: {

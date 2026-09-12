@@ -14,12 +14,11 @@ export function Nav() {
   return (
     <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-700",
+        "fixed inset-x-0 top-0 z-50 transition-all duration-300 ease-out",
         scrolled
           ? "border-b border-white/8 bg-void/72 py-3 backdrop-blur-xl"
           : "border-b border-transparent py-6"
       )}
-      style={{ transitionTimingFunction: "var(--ease-out-expo)" }}
     >
       <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-6 px-5 md:px-10">
         <a href="#top" className="flex items-center gap-3">
@@ -31,9 +30,9 @@ export function Nav() {
             className="h-9 w-9 rounded-full object-cover md:h-10 md:w-10"
             priority
           />
-          <span className="font-display text-[0.6rem] tracking-brand text-bone/85 md:text-[0.68rem]">
+          <bdi className="font-display text-[0.6rem] tracking-brand text-bone/85 md:text-[0.68rem]">
             {content.brand.shortName}
-          </span>
+          </bdi>
         </a>
 
         <nav className="hidden items-center gap-9 lg:flex">
@@ -41,10 +40,10 @@ export function Nav() {
             <a
               key={item.href}
               href={item.href}
-              className="group relative font-display text-[0.7rem] tracking-[0.22em] text-bone-dim uppercase transition-colors hover:text-bone"
+              className="group relative font-display text-[0.7rem] tracking-[0.22em] text-bone-dim uppercase transition-colors duration-200 hover:text-bone"
             >
               {item.label}
-              <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-tan transition-all duration-500 group-hover:w-full" />
+              <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-tan transition-all duration-200 group-hover:w-full" />
             </a>
           ))}
         </nav>
@@ -56,7 +55,7 @@ export function Nav() {
             className="group relative overflow-hidden rounded-full border border-white/15 px-4 py-2 font-display text-[0.68rem] tracking-[0.18em] text-bone/90 transition-colors hover:border-tan/60"
           >
             <span className="relative z-10">{locale === "ar" ? "EN" : "ع"}</span>
-            <span className="absolute inset-0 -translate-y-full bg-tan transition-transform duration-500 group-hover:translate-y-0" />
+            <span className="absolute inset-0 -translate-y-full bg-tan transition-transform duration-200 group-hover:translate-y-0" />
           </button>
 
           <button

@@ -25,7 +25,7 @@ export function Marques() {
         <div className="mb-12 flex flex-wrap items-end justify-between gap-6 md:mb-16">
           <div>
             <p className="mb-4 font-display text-[0.64rem] tracking-brand text-tan uppercase">
-              02 — {locale === "ar" ? "الماركات" : "Marques"}
+              <bdi>02</bdi> — {locale === "ar" ? "الماركات" : "Marques"}
             </p>
             <Reveal>
               <h2 className="font-display max-w-[18ch] text-[clamp(1.6rem,3.4vw,3rem)] leading-[1.06] font-extralight">
@@ -51,34 +51,30 @@ export function Marques() {
                 {/* Tan wash sweeps in behind the name on hover. */}
                 <span
                   className={cn(
-                    "absolute inset-y-0 start-0 -z-0 bg-gradient-to-r from-tan/12 to-transparent transition-all duration-[900ms] rtl:bg-gradient-to-l",
+                    "absolute inset-y-0 start-0 -z-0 bg-gradient-to-r from-tan/12 to-transparent transition-opacity duration-200 rtl:bg-gradient-to-l",
                     active === i ? "w-full opacity-100" : "w-0 opacity-0"
                   )}
-                  style={{ transitionTimingFunction: "var(--ease-out-expo)" }}
                   aria-hidden
                 />
 
                 <span className="relative flex items-baseline gap-5 md:gap-9">
-                  <span className="font-display text-[0.58rem] tracking-[0.2em] text-bone-dim tabular-nums">
+                  <bdi className="font-display text-[0.58rem] tracking-[0.2em] text-bone-dim tabular-nums">
                     {String(i + 1).padStart(2, "0")}
-                  </span>
+                  </bdi>
                   <span
                     className={cn(
-                      "font-display text-[clamp(1.6rem,5vw,3.9rem)] leading-none font-extralight transition-all duration-700",
-                      active === i
-                        ? "translate-x-3 text-bone rtl:-translate-x-3"
-                        : "translate-x-0 text-bone/72"
+                      "font-display text-[clamp(1.6rem,5vw,3.9rem)] leading-none font-extralight transition-colors duration-200",
+                      active === i ? "text-bone" : "text-bone/72"
                     )}
-                    style={{ transitionTimingFunction: "var(--ease-out-expo)" }}
                   >
-                    {m.name}
+                    <bdi>{m.name}</bdi>
                   </span>
                 </span>
 
                 <span
                   className={cn(
-                    "relative hidden font-display text-[0.6rem] tracking-[0.22em] text-tan uppercase transition-all duration-600 md:block",
-                    active === i ? "opacity-100 translate-x-0" : "translate-x-3 opacity-0 rtl:-translate-x-3"
+                    "relative hidden font-display text-[0.6rem] tracking-[0.22em] text-tan uppercase transition-opacity duration-200 md:block",
+                    active === i ? "opacity-100" : "opacity-0"
                   )}
                 >
                   {/* An invitation, not an availability claim we can't verify. */}

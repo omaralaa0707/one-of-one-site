@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useLocale } from "@/i18n/locale-provider";
 
 export function Footer() {
-  const { content, locale } = useLocale();
+  const { content } = useLocale();
 
   return (
     <footer className="border-t border-white/10 bg-void py-14 md:py-20">
@@ -19,9 +19,9 @@ export function Footer() {
               className="h-12 w-12 rounded-full object-cover"
             />
             <div>
-              <p className="font-display text-[0.68rem] tracking-brand text-bone">
+              <bdi className="block font-display text-[0.68rem] tracking-brand text-bone">
                 {content.brand.shortName}
-              </p>
+              </bdi>
               <p className="mt-2 max-w-[34ch] text-sm leading-relaxed text-bone-dim">
                 {content.brand.tagline}
               </p>
@@ -42,11 +42,8 @@ export function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col gap-3 border-t border-white/8 pt-8 text-xs text-bone-dim md:flex-row md:items-center md:justify-between">
-          <p>{content.footer.disclaimer}</p>
           <p>
             {content.footer.rights}
-            <span className="mx-2 opacity-40">/</span>
-            {locale === "ar" ? "صُمم بواسطة Claude" : "Designed by Claude"}
           </p>
         </div>
       </div>

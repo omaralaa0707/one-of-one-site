@@ -48,7 +48,7 @@ export const COLLECTION = [
   { src: "/media/car-02.webp", tall: false },
   { src: "/media/car-04.jpg", tall: true },
   { src: "/media/car-10.webp", tall: false },
-  { src: "/media/car-06.jpg", tall: true },
+  { src: "/media/car-16.webp", tall: true },
   { src: "/media/car-14.webp", tall: false },
   { src: "/media/car-18.webp", tall: false },
   { src: "/media/car-05.jpg", tall: true },

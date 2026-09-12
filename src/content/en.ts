@@ -17,7 +17,7 @@ export const en: SiteContent = {
   hero: {
     eyebrow: "Heliopolis, Cairo",
     headline: "Drive beyond expectations",
-    sub: "A curated collection of luxury and sports cars — where elegance meets innovation, and every car in the showroom is one of one.",
+    sub: "Mercedes, Porsche, Range Rover, BMW, Audi — hand-picked for condition, specification and character. Every car on the floor is one of one.",
     primaryCta: "View the collection",
     secondaryCta: "Visit the showroom",
   },
@@ -25,12 +25,7 @@ export const en: SiteContent = {
     heading: "One car. One standard. One of One.",
     body: [
       "We hand-pick every car that enters the showroom. Mercedes, Porsche, Range Rover, BMW, Audi — selected for condition, specification and character, not just for stock.",
-      "Immediate delivery, transparent pricing and flexible finance. From the first walk-around to the handover, the experience is built to feel as considered as the cars themselves.",
-    ],
-    stats: [
-      { value: "707", label: "Cars presented" },
-      { value: "5K+", label: "Following" },
-      { value: "7", label: "Marques" },
+      "Immediate delivery and flexible finance. From the first walk-around to the handover, the experience is built to feel as considered as the cars themselves.",
     ],
   },
   services: {
@@ -46,7 +41,7 @@ export const en: SiteContent = {
         body: "Installment plans arranged around you, with terms explained in full before anything is signed.",
       },
       {
-        title: "Curated inventory",
+        title: "Selected inventory",
         body: "Every car inspected and specified before it earns a place on the floor. Condition first, always.",
       },
       {
@@ -57,7 +52,7 @@ export const en: SiteContent = {
   },
   gallery: {
     heading: "The collection",
-    intro: "A rotating selection from the showroom floor.",
+    intro: "A look inside the showroom floor.",
     items: [],
   },
   contact: {
@@ -76,9 +71,7 @@ export const en: SiteContent = {
     cta: "Get directions",
   },
   footer: {
-    disclaimer:
-      "Concept design — not an official One of One Automotive website.",
-    rights: "All imagery belongs to One of One Automotive.",
+    rights: "© One of One Automotive. All rights reserved.",
   },
   a11y: {
     toggleLanguage: "Switch to Arabic",
